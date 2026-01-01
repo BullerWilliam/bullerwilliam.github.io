@@ -26,25 +26,48 @@ section {
 }
 .socials {
 	display: flex;
-	gap: 12px;
-	flex-wrap: wrap;
+	gap: 14px;
 	justify-content: center;
+	flex-wrap: wrap;
 }
 .social {
-	padding: 12px 18px;
-	border-radius: 10px;
-	text-decoration: none;
-	color: white;
-	font-weight: bold;
+	width: 52px;
+	height: 52px;
+	border-radius: 14px;
 	background: #1e293b;
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	transition: transform 0.15s, background 0.15s;
+	justify-content: center;
+	text-decoration: none;
+	font-size: 26px;
+	transition: transform 0.2s, background 0.2s;
 }
 .social:hover {
-	transform: translateY(-4px);
+	transform: translateY(-6px) scale(1.05);
 	background: #334155;
+}
+.sort {
+	display: flex;
+	gap: 10px;
+	justify-content: center;
+	margin-bottom: 20px;
+}
+.sort button {
+	background: #1e293b;
+	color: white;
+	border: none;
+	padding: 8px 14px;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background 0.2s, transform 0.2s;
+}
+.sort button:hover {
+	background: #334155;
+	transform: translateY(-2px);
+}
+.sort button.active {
+	background: #38bdf8;
+	color: #020617;
 }
 .grid {
 	display: grid;
@@ -53,11 +76,12 @@ section {
 }
 .card {
 	background: #020617;
-	border-radius: 14px;
+	border-radius: 16px;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 	box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+	animation: fadeIn 0.4s ease forwards;
 }
 .thumb {
 	width: 100%;
@@ -89,9 +113,21 @@ section {
 	font-weight: bold;
 	background: #38bdf8;
 	color: #020617;
+	transition: transform 0.2s, background 0.2s;
 }
 .card a:hover {
 	background: #0ea5e9;
+	transform: translateY(-2px);
+}
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 </style>
 </head>
@@ -109,96 +145,83 @@ section {
 
 <section>
 	<h2>Games & Projects</h2>
+	<div class="sort">
+		<button class="active" data-filter="all">All</button>
+		<button data-filter="itch">Itch.io</button>
+		<button data-filter="roblox">Roblox</button>
+	</div>
 	<div class="grid" id="projects"></div>
 </section>
 
 <script>
 const socialLinks = [
-	{ name: 'Itch.io', url: 'https://bullerwilliam.itch.io', icon: '🎮' },
-	{ name: 'Roblox', url: 'https://www.roblox.com/users/1428715729/profile', icon: '🟥' },
-	{ name: 'Discord', url: 'https://discord.com/users/1120355392828997727', icon: '💬' },
-	{ name: 'GitHub', url: 'https://github.com/BullerWilliam', icon: '💻' }
+	{ url: 'https://bullerwilliam.itch.io', icon: '🎮' },
+	{ url: 'https://www.roblox.com/users/1428715729/profile', icon: '🟥' },
+	{ url: 'https://discord.com/users/1120355392828997727', icon: '💬' },
+	{ url: 'https://github.com/BullerWilliam', icon: '🐙' }
 ]
 
-const projects = [
-	{ title: 'Hidden Images', url: 'https://bullerwilliam.itch.io/hidden-images', platform: 'itch' },
-	{ title: 'CloudChat 3', url: 'https://bullerwilliam.itch.io/cloudchat-3', platform: 'itch' },
-	{ title: 'City Builder', url: 'https://www.roblox.com/games/130885256395145/City-Builder', platform: 'roblox' },
-	{ title: 'Open World Game', url: 'https://www.roblox.com/games/118953943422122/Open-World-Game', platform: 'roblox' },
-	{ title: 'RbxPenguin', url: 'https://www.roblox.com/games/117429596384130/RbxPenguin', platform: 'roblox' }
-]
+const projects = []
 
 const socialsDiv = document.getElementById('socials')
 const projectsDiv = document.getElementById('projects')
+const sortButtons = document.querySelectorAll('.sort button')
 
 for (const s of socialLinks) {
 	const a = document.createElement('a')
 	a.className = 'social'
 	a.href = s.url
 	a.target = '_blank'
-	a.textContent = s.icon + ' ' + s.name
+	a.textContent = s.icon
 	socialsDiv.appendChild(a)
 }
 
-function getRobloxPlaceId(url) {
-	const m = url.match(/games\/(\d+)/)
-	return m ? m[1] : null
-}
+function renderProjects(filter) {
+	projectsDiv.innerHTML = ''
+	for (const p of projects) {
+		if (filter !== 'all' && p.platform !== filter) continue
+		const card = document.createElement('div')
+		card.className = 'card'
 
-async function getItchThumb(url) {
-	const r = await fetch('https://itch.io/oembed?url=' + encodeURIComponent(url) + '&format=json')
-	const j = await r.json()
-	return j.thumbnail_url
-}
+		const img = document.createElement('img')
+		img.className = 'thumb'
+		img.src = p.thumb || ''
 
-async function getRobloxThumb(placeId) {
-	const r = await fetch('https://thumbnails.roblox.com/v1/places/icons?placeIds=' + placeId + '&size=512x512&format=Png&isCircular=false')
-	const j = await r.json()
-	return j.data[0].imageUrl
-}
+		const content = document.createElement('div')
+		content.className = 'card-content'
 
-async function addProject(p) {
-	const card = document.createElement('div')
-	card.className = 'card'
+		const title = document.createElement('h3')
+		title.textContent = p.title
 
-	const img = document.createElement('img')
-	img.className = 'thumb'
+		const tag = document.createElement('div')
+		tag.className = 'tag'
+		tag.textContent = p.platform.toUpperCase()
 
-	if (p.platform === 'roblox') {
-		const id = getRobloxPlaceId(p.url)
-		if (id) img.src = await getRobloxThumb(id)
+		const link = document.createElement('a')
+		link.href = p.url
+		link.target = '_blank'
+		link.textContent = 'View'
+
+		content.appendChild(title)
+		content.appendChild(tag)
+		content.appendChild(link)
+
+		card.appendChild(img)
+		card.appendChild(content)
+
+		projectsDiv.appendChild(card)
 	}
-
-	if (p.platform === 'itch') {
-		img.src = await getItchThumb(p.url)
-	}
-
-	const content = document.createElement('div')
-	content.className = 'card-content'
-
-	const title = document.createElement('h3')
-	title.textContent = p.title
-
-	const tag = document.createElement('div')
-	tag.className = 'tag'
-	tag.textContent = p.platform.toUpperCase()
-
-	const link = document.createElement('a')
-	link.href = p.url
-	link.target = '_blank'
-	link.textContent = 'View'
-
-	content.appendChild(title)
-	content.appendChild(tag)
-	content.appendChild(link)
-
-	card.appendChild(img)
-	card.appendChild(content)
-
-	projectsDiv.appendChild(card)
 }
 
-for (const p of projects) addProject(p)
+for (const b of sortButtons) {
+	b.onclick = () => {
+		for (const x of sortButtons) x.classList.remove('active')
+		b.classList.add('active')
+		renderProjects(b.dataset.filter)
+	}
+}
+
+renderProjects('all')
 </script>
 
 </body>
