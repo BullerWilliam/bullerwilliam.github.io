@@ -11,6 +11,9 @@ body {
 	font-family: Arial, sans-serif;
 	background: #0b1020;
 	color: white;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
 }
 
 header {
@@ -22,6 +25,7 @@ section {
 	padding: 24px;
 	max-width: 1100px;
 	margin: auto;
+	width: 100%;
 }
 
 .socials {
@@ -120,6 +124,19 @@ select {
 	background: #38bdf8;
 	color: #020617;
 }
+
+footer {
+	margin-top: auto;
+	padding: 16px;
+	text-align: center;
+	font-size: 14px;
+	opacity: 0.8;
+}
+
+footer a {
+	color: #38bdf8;
+	text-decoration: none;
+}
 </style>
 </head>
 
@@ -150,13 +167,13 @@ select {
 <footer>
 	<p>The site is licensed under <a href="//github.com/BullerWilliam/bullerwilliam.github.io?tab=License-1-ov-file">BullerWilliam's Personal License</a></p> 
 </footer>
-	
+
 <script>
 const socialLinks = [
-	{ name: 'Itch.io', url: 'https://bullerwilliam.itch.io', icon: 'https://cdn.simpleicons.org/itchdotio/white' },
-	{ name: 'Roblox', url: 'https://www.roblox.com/users/1428715729/profile', icon: 'https://cdn.simpleicons.org/roblox/white' },
-	{ name: 'Discord', url: 'https://discord.com/users/1120355392828997727', icon: 'https://cdn.simpleicons.org/discord/white' },
-	{ name: 'GitHub', url: 'https://github.com/BullerWilliam', icon: 'https://cdn.simpleicons.org/github/white' }
+	{ name: 'Itch.io', url: 'https://bullerwilliam.itch.io', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/itchdotio.svg' },
+	{ name: 'Roblox', url: 'https://www.roblox.com/users/1428715729/profile', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/roblox.svg' },
+	{ name: 'Discord', url: 'https://discord.com/users/1120355392828997727', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg' },
+	{ name: 'GitHub', url: 'https://github.com/BullerWilliam', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/github.svg' }
 ]
 
 const projects = [
@@ -188,32 +205,31 @@ for (const s of socialLinks) {
 	socialsDiv.appendChild(a)
 }
 
-async function getItchImage(url) {
-	const res = await fetch('https://api.microlink.io/?url=' + encodeURIComponent(url))
-	const data = await res.json()
-	return data.data.image?.url || ''
+async function fetchItch(url) {
+	const r = await fetch('https://api.microlink.io/?url=' + encodeURIComponent(url))
+	const j = await r.json()
+	return j.data.image?.url || ''
 }
 
-async function getRobloxImage(url) {
+async function fetchRoblox(url) {
 	const id = url.match(/games\/(\d+)/)[1]
-	const res = await fetch('https://thumbnails.roblox.com/v1/places/gameicons?placeIds=' + id + '&size=512x512&format=Png')
-	const data = await res.json()
-	return data.data[0].imageUrl
+	const r = await fetch('https://thumbnails.roblox.com/v1/places/gameicons?placeIds=' + id + '&size=512x512&format=Png')
+	const j = await r.json()
+	return j.data[0].imageUrl
 }
 
 async function render() {
 	projectsDiv.innerHTML = ''
 	const list = filter.value === 'all' ? projects : projects.filter(p => p.platform === filter.value)
 
-	for (const p of list) {
+	const cards = list.map(async (p, i) => {
 		const card = document.createElement('div')
 		card.className = 'card'
+		card.style.animationDelay = i * 0.05 + 's'
 
 		const img = document.createElement('img')
 		img.className = 'thumb'
-
-		if (p.platform === 'itch') img.src = await getItchImage(p.url)
-		else img.src = await getRobloxImage(p.url)
+		img.src = p.platform === 'itch' ? await fetchItch(p.url) : await fetchRoblox(p.url)
 
 		const content = document.createElement('div')
 		content.className = 'content'
@@ -236,8 +252,12 @@ async function render() {
 
 		card.appendChild(img)
 		card.appendChild(content)
-		projectsDiv.appendChild(card)
-	}
+
+		return card
+	})
+
+	const resolved = await Promise.all(cards)
+	for (const c of resolved) projectsDiv.appendChild(c)
 }
 
 filter.onchange = render
@@ -246,4 +266,3 @@ render()
 
 </body>
 </html>
-
