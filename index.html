@@ -147,10 +147,10 @@ section {
 
 <script>
 const socialLinks = [
-	{ url: 'https://bullerwilliam.itch.io', icon: '<svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>' },
-	{ url: 'https://www.roblox.com/users/1428715729/profile', icon: '<svg viewBox="0 0 24 24"><path d="M3 3h18v18H3zM9 9h6v6H9z"/></svg>' },
-	{ url: 'https://discord.com/users/1120355392828997727', icon: '<svg viewBox="0 0 24 24"><path d="M20 4a16 16 0 0 0-4-1l-1 2a12 12 0 0 0-6 0L8 3a16 16 0 0 0-4 1C2 8 2 16 12 20c10-4 10-12 8-16z"/></svg>' },
-	{ url: 'https://github.com/BullerWilliam', icon: '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-3 19v-3c-3 1-4-1-4-1a3 3 0 0 0-1-2c-1-1 0-1 0-1a2 2 0 0 1 2 1 2 2 0 0 0 3 1 2 2 0 0 1 1-1c-2 0-4-1-4-4a3 3 0 0 1 1-2 3 3 0 0 1 0-2s1 0 2 1a7 7 0 0 1 4 0c1-1 2-1 2-1a3 3 0 0 1 0 2 3 3 0 0 1 1 2c0 3-2 4-4 4a2 2 0 0 1 1 2v4a10 10 0 0 0-3-19z"/></svg>' }
+	{ url: 'https://bullerwilliam.itch.io', icon: '<img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/brands-itch-io.svg" alt="Itch.io">' },
+	{ url: 'https://www.roblox.com/users/1428715729/profile', icon: '<img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/roblox.svg" alt="Roblox">' },
+	{ url: 'https://discord.com/users/1120355392828997727', icon: '<img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/discord.svg" alt="Discord">' },
+	{ url: 'https://github.com/BullerWilliam', icon: '<img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub">' }
 ]
 
 const projects = [
@@ -178,26 +178,20 @@ function renderProjects(filter) {
 	projectsDiv.innerHTML = ''
 	for (const p of projects) {
 		if (filter !== 'all' && p.platform !== filter) continue
-
 		const card = document.createElement('div')
 		card.className = 'card'
-
 		const title = document.createElement('h3')
 		title.textContent = p.title
-
 		const tag = document.createElement('div')
 		tag.className = 'tag'
 		tag.textContent = p.platform.toUpperCase()
-
 		const link = document.createElement('a')
 		link.href = p.url
 		link.target = '_blank'
 		link.textContent = 'View'
-
 		card.appendChild(title)
 		card.appendChild(tag)
 		card.appendChild(link)
-
 		projectsDiv.appendChild(card)
 	}
 }
