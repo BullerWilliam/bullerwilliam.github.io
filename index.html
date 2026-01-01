@@ -26,21 +26,25 @@ section {
 }
 .socials {
 	display: flex;
-	gap: 14px;
+	gap: 16px;
 	justify-content: center;
 	flex-wrap: wrap;
 }
 .social {
-	width: 52px;
-	height: 52px;
+	width: 54px;
+	height: 54px;
 	border-radius: 14px;
 	background: #1e293b;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	text-decoration: none;
-	font-size: 26px;
 	transition: transform 0.2s, background 0.2s;
+}
+.social svg {
+	width: 26px;
+	height: 26px;
+	fill: white;
 }
 .social:hover {
 	transform: translateY(-6px) scale(1.05);
@@ -77,24 +81,12 @@ section {
 .card {
 	background: #020617;
 	border-radius: 16px;
-	overflow: hidden;
+	padding: 16px;
 	display: flex;
 	flex-direction: column;
+	gap: 10px;
 	box-shadow: 0 10px 25px rgba(0,0,0,0.4);
 	animation: fadeIn 0.4s ease forwards;
-}
-.thumb {
-	width: 100%;
-	aspect-ratio: 16 / 9;
-	background: #000;
-	object-fit: cover;
-}
-.card-content {
-	padding: 14px;
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-	flex: 1;
 }
 .card h3 {
 	margin: 0;
@@ -155,13 +147,19 @@ section {
 
 <script>
 const socialLinks = [
-	{ url: 'https://bullerwilliam.itch.io', icon: '🎮' },
-	{ url: 'https://www.roblox.com/users/1428715729/profile', icon: '🟥' },
-	{ url: 'https://discord.com/users/1120355392828997727', icon: '💬' },
-	{ url: 'https://github.com/BullerWilliam', icon: '🐙' }
+	{ url: 'https://bullerwilliam.itch.io', icon: '<svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>' },
+	{ url: 'https://www.roblox.com/users/1428715729/profile', icon: '<svg viewBox="0 0 24 24"><path d="M3 3h18v18H3zM9 9h6v6H9z"/></svg>' },
+	{ url: 'https://discord.com/users/1120355392828997727', icon: '<svg viewBox="0 0 24 24"><path d="M20 4a16 16 0 0 0-4-1l-1 2a12 12 0 0 0-6 0L8 3a16 16 0 0 0-4 1C2 8 2 16 12 20c10-4 10-12 8-16z"/></svg>' },
+	{ url: 'https://github.com/BullerWilliam', icon: '<svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-3 19v-3c-3 1-4-1-4-1a3 3 0 0 0-1-2c-1-1 0-1 0-1a2 2 0 0 1 2 1 2 2 0 0 0 3 1 2 2 0 0 1 1-1c-2 0-4-1-4-4a3 3 0 0 1 1-2 3 3 0 0 1 0-2s1 0 2 1a7 7 0 0 1 4 0c1-1 2-1 2-1a3 3 0 0 1 0 2 3 3 0 0 1 1 2c0 3-2 4-4 4a2 2 0 0 1 1 2v4a10 10 0 0 0-3-19z"/></svg>' }
 ]
 
-const projects = []
+const projects = [
+	{ title: 'Hidden Images', url: 'https://bullerwilliam.itch.io/hidden-images', platform: 'itch' },
+	{ title: 'CloudChat 3', url: 'https://bullerwilliam.itch.io/cloudchat-3', platform: 'itch' },
+	{ title: 'City Builder', url: 'https://www.roblox.com/games/130885256395145/City-Builder', platform: 'roblox' },
+	{ title: 'Open World Game', url: 'https://www.roblox.com/games/118953943422122/Open-World-Game', platform: 'roblox' },
+	{ title: 'RbxPenguin', url: 'https://www.roblox.com/games/117429596384130/RbxPenguin', platform: 'roblox' }
+]
 
 const socialsDiv = document.getElementById('socials')
 const projectsDiv = document.getElementById('projects')
@@ -172,7 +170,7 @@ for (const s of socialLinks) {
 	a.className = 'social'
 	a.href = s.url
 	a.target = '_blank'
-	a.textContent = s.icon
+	a.innerHTML = s.icon
 	socialsDiv.appendChild(a)
 }
 
@@ -180,15 +178,9 @@ function renderProjects(filter) {
 	projectsDiv.innerHTML = ''
 	for (const p of projects) {
 		if (filter !== 'all' && p.platform !== filter) continue
+
 		const card = document.createElement('div')
 		card.className = 'card'
-
-		const img = document.createElement('img')
-		img.className = 'thumb'
-		img.src = p.thumb || ''
-
-		const content = document.createElement('div')
-		content.className = 'card-content'
 
 		const title = document.createElement('h3')
 		title.textContent = p.title
@@ -202,12 +194,9 @@ function renderProjects(filter) {
 		link.target = '_blank'
 		link.textContent = 'View'
 
-		content.appendChild(title)
-		content.appendChild(tag)
-		content.appendChild(link)
-
-		card.appendChild(img)
-		card.appendChild(content)
+		card.appendChild(title)
+		card.appendChild(tag)
+		card.appendChild(link)
 
 		projectsDiv.appendChild(card)
 	}
