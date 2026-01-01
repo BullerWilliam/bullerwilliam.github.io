@@ -9,7 +9,7 @@
 body {
 	margin: 0;
 	font-family: Arial, sans-serif;
-	background: #0b1020;
+	background: radial-gradient(circle at top, #111827, #020617);
 	color: white;
 	display: flex;
 	flex-direction: column;
@@ -17,7 +17,7 @@ body {
 }
 
 header {
-	padding: 32px;
+	padding: 40px 20px;
 	text-align: center;
 }
 
@@ -40,7 +40,7 @@ section {
 	align-items: center;
 	gap: 10px;
 	padding: 10px 16px;
-	border-radius: 10px;
+	border-radius: 12px;
 	background: #1e293b;
 	color: white;
 	text-decoration: none;
@@ -68,8 +68,8 @@ select {
 	background: #020617;
 	color: white;
 	border: 1px solid #334155;
-	padding: 8px 12px;
-	border-radius: 8px;
+	padding: 8px 14px;
+	border-radius: 10px;
 }
 
 .grid {
@@ -79,19 +79,21 @@ select {
 }
 
 .card {
-	background: #020617;
-	border-radius: 14px;
+	background: linear-gradient(180deg, #020617, #020617cc);
+	border-radius: 16px;
 	overflow: hidden;
-	box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-	opacity: 0;
-	transform: translateY(16px);
-	animation: fade 0.4s ease forwards;
+	box-shadow: 0 15px 30px rgba(0,0,0,0.45);
+	animation: pop 0.35s ease forwards;
 }
 
-@keyframes fade {
+@keyframes pop {
+	from {
+		opacity: 0;
+		transform: translateY(14px) scale(0.98);
+	}
 	to {
 		opacity: 1;
-		transform: translateY(0);
+		transform: translateY(0) scale(1);
 	}
 }
 
@@ -99,7 +101,7 @@ select {
 	width: 100%;
 	height: 140px;
 	object-fit: cover;
-	background: #000;
+	background: linear-gradient(135deg, #020617, #1e293b);
 }
 
 .content {
@@ -118,24 +120,31 @@ select {
 	margin-top: auto;
 	text-align: center;
 	padding: 10px;
-	border-radius: 8px;
+	border-radius: 10px;
 	text-decoration: none;
 	font-weight: bold;
-	background: #38bdf8;
+	background: linear-gradient(135deg, #38bdf8, #0ea5e9);
 	color: #020617;
 }
 
 footer {
 	margin-top: auto;
-	padding: 16px;
+	background: linear-gradient(180deg, #020617, #020617dd);
+	border-top: 1px solid #1e293b;
+	padding: 22px;
 	text-align: center;
+}
+
+footer p {
+	margin: 0;
 	font-size: 14px;
-	opacity: 0.8;
+	opacity: 0.85;
 }
 
 footer a {
 	color: #38bdf8;
 	text-decoration: none;
+	font-weight: bold;
 }
 </style>
 </head>
@@ -165,7 +174,7 @@ footer a {
 </section>
 
 <footer>
-	<p>The site is licensed under <a href="//github.com/BullerWilliam/bullerwilliam.github.io?tab=License-1-ov-file">BullerWilliam's Personal License</a></p> 
+	<p>The site is licensed under <a href="//github.com/BullerWilliam/bullerwilliam.github.io?tab=License-1-ov-file">BullerWilliam's Personal License</a></p>
 </footer>
 
 <script>
@@ -205,31 +214,16 @@ for (const s of socialLinks) {
 	socialsDiv.appendChild(a)
 }
 
-async function fetchItch(url) {
-	const r = await fetch('https://api.microlink.io/?url=' + encodeURIComponent(url))
-	const j = await r.json()
-	return j.data.image?.url || ''
-}
-
-async function fetchRoblox(url) {
-	const id = url.match(/games\/(\d+)/)[1]
-	const r = await fetch('https://thumbnails.roblox.com/v1/places/gameicons?placeIds=' + id + '&size=512x512&format=Png')
-	const j = await r.json()
-	return j.data[0].imageUrl
-}
-
-async function render() {
+function render() {
 	projectsDiv.innerHTML = ''
 	const list = filter.value === 'all' ? projects : projects.filter(p => p.platform === filter.value)
 
-	const cards = list.map(async (p, i) => {
+	list.forEach(p => {
 		const card = document.createElement('div')
 		card.className = 'card'
-		card.style.animationDelay = i * 0.05 + 's'
 
 		const img = document.createElement('img')
 		img.className = 'thumb'
-		img.src = p.platform === 'itch' ? await fetchItch(p.url) : await fetchRoblox(p.url)
 
 		const content = document.createElement('div')
 		content.className = 'content'
@@ -252,12 +246,19 @@ async function render() {
 
 		card.appendChild(img)
 		card.appendChild(content)
+		projectsDiv.appendChild(card)
 
-		return card
+		if (p.platform === 'roblox') {
+			const id = p.url.match(/games\/(\d+)/)[1]
+			fetch('https://thumbnails.roblox.com/v1/places/gameicons?placeIds=' + id + '&size=512x512&format=Png')
+				.then(r => r.json())
+				.then(j => img.src = j.data[0].imageUrl)
+		} else {
+			fetch('https://api.microlink.io/?url=' + encodeURIComponent(p.url))
+				.then(r => r.json())
+				.then(j => img.src = j.data.image?.url)
+		}
 	})
-
-	const resolved = await Promise.all(cards)
-	for (const c of resolved) projectsDiv.appendChild(c)
 }
 
 filter.onchange = render
