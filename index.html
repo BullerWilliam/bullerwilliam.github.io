@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Home</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 body {
 	margin: 0;
@@ -11,103 +12,115 @@ body {
 	background: #0b1020;
 	color: white;
 }
+
 header {
 	padding: 32px;
 	text-align: center;
 }
+
 h1 {
 	margin: 0;
 	font-size: 36px;
 }
+
 section {
 	padding: 24px;
 	max-width: 1100px;
 	margin: auto;
 }
+
 .socials {
 	display: flex;
 	gap: 14px;
-	justify-content: center;
 	flex-wrap: wrap;
+	justify-content: center;
 }
+
 .social {
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	padding: 10px 14px;
-	border-radius: 12px;
-	background: #1e293b;
-	color: white;
+	padding: 12px 18px;
+	border-radius: 10px;
 	text-decoration: none;
+	color: white;
 	font-weight: bold;
+	background: #1e293b;
 	transition: transform 0.2s, background 0.2s;
 }
+
 .social img {
-	width: 22px;
-	height: 22px;
+	width: 20px;
+	height: 20px;
 }
+
 .social:hover {
 	transform: translateY(-4px);
 	background: #334155;
 }
-.sort {
+
+.controls {
 	display: flex;
-	gap: 10px;
 	justify-content: center;
 	margin-bottom: 20px;
 }
-.sort button {
-	background: #1e293b;
+
+select {
+	background: #020617;
 	color: white;
-	border: none;
-	padding: 8px 14px;
+	border: 1px solid #334155;
+	padding: 8px 12px;
 	border-radius: 8px;
-	cursor: pointer;
-	transition: background 0.2s, transform 0.2s;
 }
-.sort button:hover {
-	background: #334155;
-	transform: translateY(-2px);
-}
-.sort button.active {
-	background: #38bdf8;
-	color: #020617;
-}
+
 .grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 	gap: 18px;
 }
+
 .card {
 	background: #020617;
-	border-radius: 16px;
+	border-radius: 14px;
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 	box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-	animation: fadeIn 0.4s ease forwards;
+	transform: translateY(20px);
+	opacity: 0;
+	animation: fadeUp 0.4s ease forwards;
 }
+
+@keyframes fadeUp {
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
 .thumb {
 	width: 100%;
-	aspect-ratio: 16 / 9;
+	height: 130px;
 	object-fit: cover;
 	background: #000;
 }
+
 .card-content {
 	padding: 14px;
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
-	flex: 1;
 }
+
 .card h3 {
 	margin: 0;
-	font-size: 18px;
 }
+
 .tag {
 	font-size: 12px;
 	opacity: 0.7;
 }
+
 .card a {
 	margin-top: auto;
 	text-align: center;
@@ -117,28 +130,18 @@ section {
 	font-weight: bold;
 	background: #38bdf8;
 	color: #020617;
-	transition: transform 0.2s, background 0.2s;
 }
+
 .card a:hover {
 	background: #0ea5e9;
-	transform: translateY(-2px);
-}
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-		transform: translateY(10px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
 }
 </style>
 </head>
+
 <body>
 
 <header>
-	<h1>William</h1>
+	<h1>Your Name</h1>
 	<p>Games • Projects • Links</p>
 </header>
 
@@ -149,20 +152,40 @@ section {
 
 <section>
 	<h2>Games & Projects</h2>
-	<div class="sort">
-		<button class="active" data-filter="all">All</button>
-		<button data-filter="itch">itch.io</button>
-		<button data-filter="roblox">roblox</button>
+
+	<div class="controls">
+		<select id="sort">
+			<option value="all">all</option>
+			<option value="itch">itch.io</option>
+			<option value="roblox">roblox</option>
+		</select>
 	</div>
+
 	<div class="grid" id="projects"></div>
 </section>
 
 <script>
 const socialLinks = [
-	{ name: 'itch.io', url: 'https://bullerwilliam.itch.io', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/itchdotio.svg' },
-	{ name: 'roblox', url: 'https://www.roblox.com/users/1428715729/profile', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/roblox.svg' },
-	{ name: 'discord', url: 'https://discord.com/users/1120355392828997727', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/discord.svg' },
-	{ name: 'github', url: 'https://github.com/BullerWilliam', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg' }
+	{
+		name: 'Itch.io',
+		url: 'https://bullerwilliam.itch.io',
+		icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/itchdotio.svg'
+	},
+	{
+		name: 'Roblox',
+		url: 'https://www.roblox.com/users/1428715729/profile',
+		icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/roblox.svg'
+	},
+	{
+		name: 'Discord',
+		url: 'https://discord.com/users/1120355392828997727',
+		icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg'
+	},
+	{
+		name: 'GitHub',
+		url: 'https://github.com/BullerWilliam',
+		icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/github.svg'
+	}
 ]
 
 const projects = [
@@ -175,7 +198,7 @@ const projects = [
 
 const socialsDiv = document.getElementById('socials')
 const projectsDiv = document.getElementById('projects')
-const sortButtons = document.querySelectorAll('.sort button')
+const sortSelect = document.getElementById('sort')
 
 for (const s of socialLinks) {
 	const a = document.createElement('a')
@@ -194,42 +217,29 @@ for (const s of socialLinks) {
 	socialsDiv.appendChild(a)
 }
 
-function getRobloxId(url) {
-	const m = url.match(/games\/(\d+)/)
-	return m ? m[1] : null
+function getThumbnail(p) {
+	if (p.platform === 'roblox') {
+		const id = p.url.match(/games\/(\d+)/)[1]
+		return 'https://thumbnails.roblox.com/v1/games/icons?gameIds=' + id + '&size=512x512&format=Png&isCircular=false'
+	}
+	return 'https://itch.io/favicon.ico'
 }
 
-async function getRobloxThumb(id) {
-	const r = await fetch('https://thumbnails.roblox.com/v1/places/icons?placeIds=' + id + '&size=512x512&format=Png&isCircular=false')
-	const j = await r.json()
-	return j.data[0].imageUrl
-}
-
-async function getItchThumb(url) {
-	const r = await fetch('https://itch.io/oembed?format=json&url=' + encodeURIComponent(url))
-	const j = await r.json()
-	return j.thumbnail_url
-}
-
-async function renderProjects(filter) {
+function renderProjects(filter) {
 	projectsDiv.innerHTML = ''
-	for (const p of projects) {
-		if (filter !== 'all' && p.platform !== filter) continue
 
+	const filtered = filter === 'all'
+		? projects
+		: projects.filter(p => p.platform === filter)
+
+	filtered.forEach((p, i) => {
 		const card = document.createElement('div')
 		card.className = 'card'
+		card.style.animationDelay = (i * 0.05) + 's'
 
 		const img = document.createElement('img')
 		img.className = 'thumb'
-
-		if (p.platform === 'roblox') {
-			const id = getRobloxId(p.url)
-			if (id) img.src = await getRobloxThumb(id)
-		}
-
-		if (p.platform === 'itch') {
-			img.src = await getItchThumb(p.url)
-		}
+		img.src = getThumbnail(p)
 
 		const content = document.createElement('div')
 		content.className = 'card-content'
@@ -244,7 +254,7 @@ async function renderProjects(filter) {
 		const link = document.createElement('a')
 		link.href = p.url
 		link.target = '_blank'
-		link.textContent = 'View'
+		link.textContent = 'view'
 
 		content.appendChild(title)
 		content.appendChild(tag)
@@ -253,16 +263,12 @@ async function renderProjects(filter) {
 		card.appendChild(img)
 		card.appendChild(content)
 		projectsDiv.appendChild(card)
-	}
+	})
 }
 
-for (const b of sortButtons) {
-	b.onclick = () => {
-		for (const x of sortButtons) x.classList.remove('active')
-		b.classList.add('active')
-		renderProjects(b.dataset.filter)
-	}
-}
+sortSelect.addEventListener('change', () => {
+	renderProjects(sortSelect.value)
+})
 
 renderProjects('all')
 </script>
