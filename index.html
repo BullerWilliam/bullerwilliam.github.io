@@ -100,7 +100,7 @@ select {
 
 .thumb {
 	width: 100%;
-	height: 130px;
+	height: 140px;
 	object-fit: cover;
 	background: #000;
 }
@@ -166,26 +166,10 @@ select {
 
 <script>
 const socialLinks = [
-	{
-		name: 'Itch.io',
-		url: 'https://bullerwilliam.itch.io',
-		icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/itchdotio.svg'
-	},
-	{
-		name: 'Roblox',
-		url: 'https://www.roblox.com/users/1428715729/profile',
-		icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/roblox.svg'
-	},
-	{
-		name: 'Discord',
-		url: 'https://discord.com/users/1120355392828997727',
-		icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg'
-	},
-	{
-		name: 'GitHub',
-		url: 'https://github.com/BullerWilliam',
-		icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/github.svg'
-	}
+	{ name: 'Itch.io', url: 'https://bullerwilliam.itch.io', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/itchdotio.svg' },
+	{ name: 'Roblox', url: 'https://www.roblox.com/users/1428715729/profile', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/roblox.svg' },
+	{ name: 'Discord', url: 'https://discord.com/users/1120355392828997727', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg' },
+	{ name: 'GitHub', url: 'https://github.com/BullerWilliam', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/github.svg' }
 ]
 
 const projects = [
@@ -220,19 +204,18 @@ for (const s of socialLinks) {
 function getThumbnail(p) {
 	if (p.platform === 'roblox') {
 		const id = p.url.match(/games\/(\d+)/)[1]
-		return 'https://thumbnails.roblox.com/v1/games/icons?gameIds=' + id + '&size=512x512&format=Png&isCircular=false'
+		return 'https://www.roblox.com/asset-thumbnail/image?assetId=' + id + '&width=420&height=420&format=png'
 	}
-	return 'https://itch.io/favicon.ico'
+	const encoded = encodeURIComponent(p.url)
+	return 'https://images.weserv.nl/?url=' + encoded
 }
 
 function renderProjects(filter) {
 	projectsDiv.innerHTML = ''
 
-	const filtered = filter === 'all'
-		? projects
-		: projects.filter(p => p.platform === filter)
+	const list = filter === 'all' ? projects : projects.filter(p => p.platform === filter)
 
-	filtered.forEach((p, i) => {
+	list.forEach((p, i) => {
 		const card = document.createElement('div')
 		card.className = 'card'
 		card.style.animationDelay = (i * 0.05) + 's'
