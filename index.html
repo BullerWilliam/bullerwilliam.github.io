@@ -147,22 +147,13 @@ footer a {
 	font-weight: bold;
 }
 
-.elf-widget-overlay {
+.elf-widget {
 	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100vw;
 	height: 100vh;
 	z-index: 9999;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	pointer-events: none;
-}
-
-.elf-widget-overlay > div {
-	width: 100%;
-	height: 100%;
 	pointer-events: auto;
 }
 </style>
@@ -196,10 +187,8 @@ footer a {
 	<p>The site is licensed under <a href="https://bullerwilliam.github.io/license.html">BullerWilliam's Personal License</a></p>
 </footer>
 
-<div class="elf-widget-overlay">
-	<script src="https://elfsightcdn.com/platform.js" async></script>
-	<div class="elfsight-app-c8ada071-ba33-4e62-89f4-d49dfc853cd0" data-elfsight-app-lazy></div>
-</div>
+<script src="https://elfsightcdn.com/platform.js" async></script>
+<div class="elf-widget elfsight-app-c8ada071-ba33-4e62-89f4-d49dfc853cd0" data-elfsight-app-lazy></div>
 
 <script>
 const socialLinks = [
