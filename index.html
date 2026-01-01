@@ -167,7 +167,7 @@ footer a {
 		<select id="filter">
 			<option value="all">all</option>
 			<option value="itch">itch.io</option>
-			<option value="roblox">roblox</option>
+			<option value="roblox">Roblox</option>
 		</select>
 	</div>
 	<div class="grid" id="projects"></div>
@@ -186,11 +186,36 @@ const socialLinks = [
 ]
 
 const projects = [
-	{ title: 'Hidden Images', url: 'https://bullerwilliam.itch.io/hidden-images', platform: 'itch' },
-	{ title: 'CloudChat 3', url: 'https://bullerwilliam.itch.io/cloudchat-3', platform: 'itch' },
-	{ title: 'City Builder', url: 'https://www.roblox.com/games/130885256395145/City-Builder', platform: 'roblox' },
-	{ title: 'Open World Game', url: 'https://www.roblox.com/games/118953943422122/Open-World-Game', platform: 'roblox' },
-	{ title: 'RbxPenguin', url: 'https://www.roblox.com/games/117429596384130/RbxPenguin', platform: 'roblox' }
+	{
+		title: 'Hidden Images',
+		url: 'https://bullerwilliam.itch.io/hidden-images',
+		platform: 'itch',
+		image: 'https://img.itch.zone/aW1nLzI0NjQyNDcxLnBuZw==/347x500/cif08U.png'
+	},
+	{
+		title: 'CloudChat 3',
+		url: 'https://bullerwilliam.itch.io/cloudchat-3',
+		platform: 'itch',
+		image: 'https://img.itch.zone/aW1nLzIzMjg4Mjc1LnBuZw==/347x500/q1ptgE.png'
+	},
+	{
+		title: 'City Builder',
+		url: 'https://www.roblox.com/games/130885256395145/City-Builder',
+		platform: 'roblox',
+		image: 'https://t0.rbxcdn.com/180DAY-b9b1d7b305e38c8666fd39852423d926'
+	},
+	{
+		title: 'Open World Game',
+		url: 'https://www.roblox.com/games/118953943422122/Open-World-Game',
+		platform: 'roblox',
+		image: 'https://tr.rbxcdn.com/180DAY-480525599fe675acc106583ece7718c8/150/150/Image/Webp/noFilter'
+	},
+	{
+		title: 'RbxPenguin',
+		url: 'https://www.roblox.com/games/117429596384130/RbxPenguin',
+		platform: 'roblox',
+		image: 'https://t0.rbxcdn.com/180DAY-994fed900712b1e05ed1a221490df5e5'
+	}
 ]
 
 const socialsDiv = document.getElementById('socials')
@@ -225,6 +250,10 @@ function render() {
 		const img = document.createElement('img')
 		img.className = 'thumb'
 
+		if (p.image) {
+			img.src = p.image
+		}
+
 		const content = document.createElement('div')
 		content.className = 'content'
 
@@ -233,7 +262,7 @@ function render() {
 
 		const tag = document.createElement('div')
 		tag.className = 'tag'
-		tag.textContent = p.platform === 'itch' ? 'itch.io' : 'roblox'
+		tag.textContent = p.platform === 'itch' ? 'itch.io' : 'Roblox'
 
 		const link = document.createElement('a')
 		link.href = p.url
@@ -248,15 +277,17 @@ function render() {
 		card.appendChild(content)
 		projectsDiv.appendChild(card)
 
-		if (p.platform === 'roblox') {
-			const id = p.url.match(/games\/(\d+)/)[1]
-			fetch('https://thumbnails.roblox.com/v1/places/gameicons?placeIds=' + id + '&size=512x512&format=Png')
-				.then(r => r.json())
-				.then(j => img.src = j.data[0].imageUrl)
-		} else {
-			fetch('https://api.microlink.io/?url=' + encodeURIComponent(p.url))
-				.then(r => r.json())
-				.then(j => img.src = j.data.image?.url)
+		if (!p.image) {
+			if (p.platform === 'roblox') {
+				const id = p.url.match(/games\/(\d+)/)[1]
+				fetch('https://thumbnails.roblox.com/v1/places/gameicons?placeIds=' + id + '&size=512x512&format=Png')
+					.then(r => r.json())
+					.then(j => img.src = j.data[0].imageUrl)
+			} else {
+				fetch('https://api.microlink.io/?url=' + encodeURIComponent(p.url))
+					.then(r => r.json())
+					.then(j => img.src = j.data.image?.url)
+			}
 		}
 	})
 }
