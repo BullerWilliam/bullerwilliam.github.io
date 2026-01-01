@@ -26,28 +26,28 @@ section {
 }
 .socials {
 	display: flex;
-	gap: 16px;
+	gap: 14px;
 	justify-content: center;
 	flex-wrap: wrap;
 }
 .social {
-	width: 54px;
-	height: 54px;
-	border-radius: 14px;
-	background: #1e293b;
 	display: flex;
 	align-items: center;
-	justify-content: center;
+	gap: 10px;
+	padding: 10px 14px;
+	border-radius: 12px;
+	background: #1e293b;
+	color: white;
 	text-decoration: none;
+	font-weight: bold;
 	transition: transform 0.2s, background 0.2s;
 }
-.social svg {
-	width: 26px;
-	height: 26px;
-	fill: white;
+.social img {
+	width: 22px;
+	height: 22px;
 }
 .social:hover {
-	transform: translateY(-6px) scale(1.05);
+	transform: translateY(-4px);
 	background: #334155;
 }
 .sort {
@@ -81,12 +81,24 @@ section {
 .card {
 	background: #020617;
 	border-radius: 16px;
-	padding: 16px;
+	overflow: hidden;
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
 	box-shadow: 0 10px 25px rgba(0,0,0,0.4);
 	animation: fadeIn 0.4s ease forwards;
+}
+.thumb {
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	object-fit: cover;
+	background: #000;
+}
+.card-content {
+	padding: 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	flex: 1;
 }
 .card h3 {
 	margin: 0;
@@ -139,18 +151,18 @@ section {
 	<h2>Games & Projects</h2>
 	<div class="sort">
 		<button class="active" data-filter="all">All</button>
-		<button data-filter="itch">Itch.io</button>
-		<button data-filter="roblox">Roblox</button>
+		<button data-filter="itch">itch.io</button>
+		<button data-filter="roblox">roblox</button>
 	</div>
 	<div class="grid" id="projects"></div>
 </section>
 
 <script>
 const socialLinks = [
-	{ url: 'https://bullerwilliam.itch.io', icon: '<img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/brands-itch-io.svg" alt="Itch.io">' },
-	{ url: 'https://www.roblox.com/users/1428715729/profile', icon: '<img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/roblox.svg" alt="Roblox">' },
-	{ url: 'https://discord.com/users/1120355392828997727', icon: '<img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/discord.svg" alt="Discord">' },
-	{ url: 'https://github.com/BullerWilliam', icon: '<img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" alt="GitHub">' }
+	{ name: 'itch.io', url: 'https://bullerwilliam.itch.io', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/itchdotio.svg' },
+	{ name: 'roblox', url: 'https://www.roblox.com/users/1428715729/profile', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/roblox.svg' },
+	{ name: 'discord', url: 'https://discord.com/users/1120355392828997727', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/discord.svg' },
+	{ name: 'github', url: 'https://github.com/BullerWilliam', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg' }
 ]
 
 const projects = [
@@ -170,28 +182,76 @@ for (const s of socialLinks) {
 	a.className = 'social'
 	a.href = s.url
 	a.target = '_blank'
-	a.innerHTML = s.icon
+
+	const img = document.createElement('img')
+	img.src = s.icon
+
+	const span = document.createElement('span')
+	span.textContent = s.name
+
+	a.appendChild(img)
+	a.appendChild(span)
 	socialsDiv.appendChild(a)
 }
 
-function renderProjects(filter) {
+function getRobloxId(url) {
+	const m = url.match(/games\/(\d+)/)
+	return m ? m[1] : null
+}
+
+async function getRobloxThumb(id) {
+	const r = await fetch('https://thumbnails.roblox.com/v1/places/icons?placeIds=' + id + '&size=512x512&format=Png&isCircular=false')
+	const j = await r.json()
+	return j.data[0].imageUrl
+}
+
+async function getItchThumb(url) {
+	const r = await fetch('https://itch.io/oembed?format=json&url=' + encodeURIComponent(url))
+	const j = await r.json()
+	return j.thumbnail_url
+}
+
+async function renderProjects(filter) {
 	projectsDiv.innerHTML = ''
 	for (const p of projects) {
 		if (filter !== 'all' && p.platform !== filter) continue
+
 		const card = document.createElement('div')
 		card.className = 'card'
+
+		const img = document.createElement('img')
+		img.className = 'thumb'
+
+		if (p.platform === 'roblox') {
+			const id = getRobloxId(p.url)
+			if (id) img.src = await getRobloxThumb(id)
+		}
+
+		if (p.platform === 'itch') {
+			img.src = await getItchThumb(p.url)
+		}
+
+		const content = document.createElement('div')
+		content.className = 'card-content'
+
 		const title = document.createElement('h3')
 		title.textContent = p.title
+
 		const tag = document.createElement('div')
 		tag.className = 'tag'
-		tag.textContent = p.platform.toUpperCase()
+		tag.textContent = p.platform === 'itch' ? 'itch.io' : 'roblox'
+
 		const link = document.createElement('a')
 		link.href = p.url
 		link.target = '_blank'
 		link.textContent = 'View'
-		card.appendChild(title)
-		card.appendChild(tag)
-		card.appendChild(link)
+
+		content.appendChild(title)
+		content.appendChild(tag)
+		content.appendChild(link)
+
+		card.appendChild(img)
+		card.appendChild(content)
 		projectsDiv.appendChild(card)
 	}
 }
