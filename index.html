@@ -2,81 +2,184 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Simple Site</title>
+<title>Home</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body {
 	margin: 0;
 	font-family: Arial, sans-serif;
-	background: #0f172a;
+	background: #0b1020;
 	color: white;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
 }
-.container {
-	background: #020617;
-	padding: 24px;
-	border-radius: 12px;
-	width: 320px;
+header {
+	padding: 32px;
 	text-align: center;
-	box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 h1 {
-	margin-top: 0;
-	font-size: 24px;
+	margin: 0;
+	font-size: 36px;
 }
-p {
+section {
+	padding: 24px;
+	max-width: 1100px;
+	margin: auto;
+}
+.socials {
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+.social {
+	padding: 12px 18px;
+	border-radius: 10px;
+	text-decoration: none;
+	color: white;
+	font-weight: bold;
+	background: #1e293b;
+	transition: transform 0.15s, background 0.15s;
+}
+.social:hover {
+	transform: translateY(-4px);
+	background: #334155;
+}
+.grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 18px;
+}
+.card {
+	background: #020617;
+	border-radius: 14px;
+	padding: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+.card h3 {
+	margin: 0;
+}
+.card p {
 	opacity: 0.8;
+	margin: 0;
 }
-button {
-	background: #38bdf8;
-	border: none;
+.card a {
+	margin-top: auto;
+	text-align: center;
+	padding: 10px;
 	border-radius: 8px;
-	padding: 10px 16px;
-	font-size: 16px;
-	cursor: pointer;
-	margin: 6px;
-}
-button:hover {
-	background: #0ea5e9;
-}
-.counter {
-	font-size: 32px;
-	margin: 16px 0;
-}
-.light {
-	background: #f8fafc;
+	text-decoration: none;
+	font-weight: bold;
+	background: #38bdf8;
 	color: #020617;
 }
-.light .container {
-	background: white;
+.card a:hover {
+	background: #0ea5e9;
+}
+.tag {
+	font-size: 12px;
+	opacity: 0.7;
 }
 </style>
 </head>
 <body>
-<div class="container">
-	<h1>Simple Site</h1>
-	<p>Click the button</p>
-	<div class="counter" id="count">0</div>
-	<button onclick="add()">Add</button>
-	<button onclick="toggle()">Toggle Theme</button>
-</div>
+
+<header>
+	<h1>Your Name</h1>
+	<p>Games • Projects • Links</p>
+</header>
+
+<section>
+	<h2>Social Links</h2>
+	<div class="socials" id="socials"></div>
+</section>
+
+<section>
+	<h2>Games & Projects</h2>
+	<div class="grid" id="projects"></div>
+</section>
 
 <script>
-let count = 0
-let light = false
+const socialLinks = [
+	{ name: 'Itch.io', url: 'https://bullerwilliam.itch.io', type: 'itch' },
+	{ name: 'Roblox', url: 'https://www.roblox.com/users/1428715729/profile', type: 'roblox' },
+	{ name: 'Discord', url: 'https://discord.com/users/1120355392828997727', type: 'discord' },
+	{ name: 'GitHub', url: 'https://github.com/BullerWilliam', type: 'github' }
+]
 
-function add() {
-	count++
-	document.getElementById('count').textContent = count
+const projects = [
+	{
+		title: 'Hidden Images',
+		description: 'A cool game I made',
+		url: 'https://bullerwilliam.itch.io/hidden-images',
+		platform: 'itch'
+	},
+	{
+		title: 'CloudChat 3',
+		description: 'A cool game I made',
+		url: 'https://bullerwilliam.itch.io/cloudchat-3',
+		platform: 'itch'
+	},
+	{
+		title: 'City Builder',
+		description: 'A Roblox experience',
+		url: 'https://www.roblox.com/games/130885256395145/City-Builder',
+		platform: 'roblox'
+	},
+	{
+		title: 'Open World Game',
+		description: 'A Roblox experience',
+		url: 'https://www.roblox.com/games/118953943422122/Open-World-Game',
+		platform: 'roblox'
+	},
+	{
+		title: 'RbxPenguin',
+		description: 'A Roblox experience',
+		url: 'https://www.roblox.com/games/117429596384130/RbxPenguin',
+		platform: 'roblox'
+	},
+]
+
+const socialsDiv = document.getElementById('socials')
+const projectsDiv = document.getElementById('projects')
+
+for (const s of socialLinks) {
+	const a = document.createElement('a')
+	a.className = 'social'
+	a.href = s.url
+	a.target = '_blank'
+	a.textContent = s.name
+	socialsDiv.appendChild(a)
 }
 
-function toggle() {
-	light = !light
-	document.body.className = light ? 'light' : ''
+for (const p of projects) {
+	const card = document.createElement('div')
+	card.className = 'card'
+
+	const title = document.createElement('h3')
+	title.textContent = p.title
+
+	const desc = document.createElement('p')
+	desc.textContent = p.description
+
+	const tag = document.createElement('div')
+	tag.className = 'tag'
+	tag.textContent = p.platform.toUpperCase()
+
+	const link = document.createElement('a')
+	link.href = p.url
+	link.target = '_blank'
+	link.textContent = 'View'
+
+	card.appendChild(title)
+	card.appendChild(desc)
+	card.appendChild(tag)
+	card.appendChild(link)
+
+	projectsDiv.appendChild(card)
 }
 </script>
+
 </body>
 </html>
